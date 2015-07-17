@@ -2,7 +2,7 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-// Dotenv::load(__DIR__.'/../');
+Dotenv::load(__DIR__.'/../');
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ $app = new Laravel\Lumen\Application(
 
 // $app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +43,35 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
+$app->bind('Topor\Topor', function($app) {
+    return new \Topor\Topor([
+            'logs_dir' => storage_path('/logs'),
+            'best' => [
+                'env' => \Topor\Best::ENV_PROD,
+                'credentials' => [
+                    __DIR__.'/dev_key.pem',
+                    __DIR__.'/dev_cert.pem',
+                ]
+            ],
+        ]
+    );
+});
+
+$app->bind('Geocoder\Geocoder', function($app)
+{
+    $adapter  = new \Ivory\HttpAdapter\GuzzleHttpHttpAdapter();
+    $geocoder = new \Geocoder\ProviderAggregator(3);
+    $geocoder->registerProviders([
+        new \Geocoder\Provider\Yandex(
+            $adapter, 'ru_RU'
+        ),
+        new \Geocoder\Provider\GoogleMaps(
+            $adapter, 'ru_RU'
+        ),
+    ]);
+    return $geocoder;
+});
 
 /*
 |--------------------------------------------------------------------------

@@ -13,7 +13,13 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        '\App\Console\Commands\Deploy',
+        '\App\Console\Commands\Import',
+        '\App\Console\Commands\ImportCountries',
+        '\App\Console\Commands\ImportCities',
+        '\App\Console\Commands\ImportPoints',
+        '\App\Console\Commands\ImportAgentPoints',
+        '\App\Console\Commands\GeocodePoints',
     ];
 
     /**
