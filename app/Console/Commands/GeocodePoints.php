@@ -84,6 +84,27 @@ class GeocodePoints extends LoggableCommand {
 		return;
 	}
 
+	protected function tryToGetAddressFromGeocode($address, $attempts = 0) {
+		if ($attempts >=3) {
+			return;
+		}
+		$result = null;
+		/**
+		 * @var \Geocoder\Model\Address
+		 */
+		try {
+			$result = $this->geocoder->geocode($address)->first();
+			return $result;
+		} catch(\Geocoder\Exception\NoResult $no_result) {
+			$this->writeString('x');
+			return;
+		} catch(\ErrorException $response_error) {
+			$this->tryToGetAddressFromGeocode($address,++$attempts);
+		}
+
+		return $result;
+	}
+
 	/**
 	 * @param $address
 	 * @return Geocoded
@@ -98,27 +119,9 @@ class GeocodePoints extends LoggableCommand {
 			return $point;
 		}
 
-
-		/**
-		 * @var \Geocoder\Model\Address
-		 */
-		try {
-			$result = $this->geocoder->geocode($address)->first();
-		} catch(\Geocoder\Exception\NoResult $no_result) {
-			$this->writeString('x');
+		$result = $this->tryToGetAddressFromGeocode($address);
+		if (!$result) {
 			return;
-		} catch(\ErrorException $response_error) {
-			//Если возникло исключение в процессе запроса к Яндексу - делаем одиин повторный запрос
-			try {
-				$result = $this->geocoder->geocode($address)->first();
-			} catch(\Geocoder\Exception\NoResult $no_result) {
-				$this->writeString('x');
-				return;
-			} catch(\ErrorException $response_error) {
-				//И только потом бросаем это дело
-				$this->writeString('x');
-				return;
-			}
 		}
 
 		$accuracy = $result->getStreetName() ? 'address' : 'city';
