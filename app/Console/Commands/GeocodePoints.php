@@ -21,16 +21,16 @@ class GeocodePoints extends LoggableCommand {
 	 */
 	protected $description = 'Command description.';
 
-    /**
-     * @var Geocoder
-     */
-    protected $geocoder;
+	/**
+	 * @var Geocoder
+	 */
+	protected $geocoder;
 
-    public function __construct(Geocoder $geocoder)
-    {
-        $this->geocoder = $geocoder;
-        parent::__construct();
-    }
+	public function __construct(Geocoder $geocoder)
+	{
+		$this->geocoder = $geocoder;
+		parent::__construct();
+	}
 
 	/**
 	 * Execute the console command.
@@ -74,7 +74,7 @@ class GeocodePoints extends LoggableCommand {
 			try
 			{
 				if($point = $this->geocode($point, $address))
-                    $point->save();
+					$point->save();
 			}
 			catch (ChainNoResultException $e)
 			{
@@ -82,6 +82,27 @@ class GeocodePoints extends LoggableCommand {
 			}
 		}
 		return;
+	}
+
+	protected function tryToGetAddressFromGeocode($address, $attempts = 0) {
+		if ($attempts >=3) {
+			return;
+		}
+		$result = null;
+		/**
+		 * @var \Geocoder\Model\Address
+		 */
+		try {
+			$result = $this->geocoder->geocode($address)->first();
+			return $result;
+		} catch(\Geocoder\Exception\NoResult $no_result) {
+			$this->writeString('x');
+			return;
+		} catch(\ErrorException $response_error) {
+			$this->tryToGetAddressFromGeocode($address,++$attempts);
+		}
+
+		return $result;
 	}
 
 	/**
@@ -98,16 +119,10 @@ class GeocodePoints extends LoggableCommand {
 			return $point;
 		}
 
-
-        /**
-         * @var \Geocoder\Model\Address
-         */
-        try {
-            $result = $this->geocoder->geocode($address)->first();
-        } catch(\Geocoder\Exception\NoResult $no_result) {
-            $this->writeString('x');
-            return;
-        }
+		$result = $this->tryToGetAddressFromGeocode($address);
+		if (!$result) {
+			return;
+		}
 
 		$accuracy = $result->getStreetName() ? 'address' : 'city';
 		$this->addToCache($address, $result->getLatitude(), $result->getLongitude());
