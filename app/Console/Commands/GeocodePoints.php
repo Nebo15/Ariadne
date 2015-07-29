@@ -21,16 +21,16 @@ class GeocodePoints extends LoggableCommand {
 	 */
 	protected $description = 'Command description.';
 
-    /**
-     * @var Geocoder
-     */
-    protected $geocoder;
+	/**
+	 * @var Geocoder
+	 */
+	protected $geocoder;
 
-    public function __construct(Geocoder $geocoder)
-    {
-        $this->geocoder = $geocoder;
-        parent::__construct();
-    }
+	public function __construct(Geocoder $geocoder)
+	{
+		$this->geocoder = $geocoder;
+		parent::__construct();
+	}
 
 	/**
 	 * Execute the console command.
@@ -74,7 +74,7 @@ class GeocodePoints extends LoggableCommand {
 			try
 			{
 				if($point = $this->geocode($point, $address))
-                    $point->save();
+					$point->save();
 			}
 			catch (ChainNoResultException $e)
 			{
@@ -99,15 +99,27 @@ class GeocodePoints extends LoggableCommand {
 		}
 
 
-        /**
-         * @var \Geocoder\Model\Address
-         */
-        try {
-            $result = $this->geocoder->geocode($address)->first();
-        } catch(\Geocoder\Exception\NoResult $no_result) {
-            $this->writeString('x');
-            return;
-        }
+		/**
+		 * @var \Geocoder\Model\Address
+		 */
+		try {
+			$result = $this->geocoder->geocode($address)->first();
+		} catch(\Geocoder\Exception\NoResult $no_result) {
+			$this->writeString('x');
+			return;
+		} catch(\ErrorException $response_error) {
+			//Если возникло исключение в процессе запроса к Яндексу - делаем одиин повторный запрос
+			try {
+				$result = $this->geocoder->geocode($address)->first();
+			} catch(\Geocoder\Exception\NoResult $no_result) {
+				$this->writeString('x');
+				return;
+			} catch(\ErrorException $response_error) {
+				//И только потом бросаем это дело
+				$this->writeString('x');
+				return;
+			}
+		}
 
 		$accuracy = $result->getStreetName() ? 'address' : 'city';
 		$this->addToCache($address, $result->getLatitude(), $result->getLongitude());
