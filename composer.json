@@ -14,8 +14,9 @@
         "php": ">=5.5.9",
         "laravel/lumen-framework": "~5.1",
         "vlucas/phpdotenv": "~1.0",
-        "nebo15/topor": "dev-master",
-        "willdurand/geocoder": "dev-master#94c6a83af9b213aac732324c8b4d7faa26e0b190"
+        "willdurand/geocoder": "dev-master",
+        "egeloen/http-adapter": "dev-master as 0.7",
+        "nebo15/topor": "dev-master"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
