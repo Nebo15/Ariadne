@@ -24,7 +24,7 @@ class ImportAgentPoints extends ImportBestDataCommand
 	 *
 	 * @var string
 	 */
-	protected $description = 'Import agents points from BEST';
+	protected $description = 'Import agent points from BEST';
 
 	/**
 	 * Execute the console command.
