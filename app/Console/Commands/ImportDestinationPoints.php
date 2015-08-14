@@ -1,7 +1,7 @@
 <?php namespace App\Console\Commands;
 
 use App\Importers\Best\DestinationPoints, DB;
-use App\Models\Best\AgentPoint;
+use App\Models\Best\DestinationPoint;
 
 class ImportDestinationPoints extends ImportBestDataCommand {
 
@@ -40,17 +40,17 @@ class ImportDestinationPoints extends ImportBestDataCommand {
 				'destination_points.address_crc' => DB::raw('agent_points.address_crc'),
 			]);
 
-		AgentPoint::whereNull('address')->delete();
-		AgentPoint::where('address', '')->delete();
-		AgentPoint::where('address', '.')->delete();
-		AgentPoint::where('address', '-')->delete();
-		AgentPoint::where('name', 'LIKE', '%PayDirect%')->delete();
+		DestinationPoint::whereNull('address')->delete();
+		DestinationPoint::where('address', '')->delete();
+		DestinationPoint::where('address', '.')->delete();
+		DestinationPoint::where('address', '-')->delete();
+		DestinationPoint::where('name', 'LIKE', '%PayDirect%')->delete();
 
 		//Временно оставляем только unistream
-		//AgentPoint::where('system_id', '<>', 19)->delete();
+		//DestinationPoint::where('system_id', '<>', 19)->delete();
 	}
 
-	protected function importInboundAgentPoints()
+	protected function importInboundDestinationPoints()
 	{
 		$destination_points = [
 			['city_id' => 398, 'point_id' => 1001],
@@ -62,7 +62,7 @@ class ImportDestinationPoints extends ImportBestDataCommand {
 
 		foreach($destination_points as $destination_points)
 		{
-			AgentPoint::insert([
+			DestinationPoint::insert([
 				'system_id' => 0,
 				'country_id' => 643,
 				'city_id' => $destination_points['city_id'],
