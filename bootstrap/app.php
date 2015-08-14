@@ -49,9 +49,10 @@ $app->bind('Topor\Topor', function($app) {
             'logs_dir' => storage_path('/logs'),
             'best' => [
                 'env' => \Topor\Best::ENV_PROD,
+                'partner_id' => 7777773,
                 'credentials' => [
-                    __DIR__.'/dev_key.pem',
-                    __DIR__.'/dev_cert.pem',
+                    __DIR__.'/best.key',
+                    __DIR__.'/best.crt',
                 ]
             ],
         ]
@@ -60,7 +61,7 @@ $app->bind('Topor\Topor', function($app) {
 
 $app->bind('Geocoder\Geocoder', function($app)
 {
-    $adapter  = new \Ivory\HttpAdapter\GuzzleHttpHttpAdapter();
+    $adapter  = new \Ivory\HttpAdapter\Guzzle6HttpAdapter();
     $geocoder = new \Geocoder\ProviderAggregator(3);
     $geocoder->registerProviders([
         new \Geocoder\Provider\Yandex(

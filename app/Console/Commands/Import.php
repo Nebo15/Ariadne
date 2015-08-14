@@ -28,8 +28,8 @@ class Import extends LoggableCommand {
 	{
 		$this->call('import:countries');
 		$this->call('import:cities');
-		$this->call('import:points');
-		$this->call('import:agents');
+		$this->call('import:agent-points');
+		$this->call('import:destination-points');
 		$this->call('geo:code');
 	}
 
