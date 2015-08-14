@@ -17,7 +17,7 @@ class Kernel extends ConsoleKernel
         '\App\Console\Commands\Import',
         '\App\Console\Commands\ImportCountries',
         '\App\Console\Commands\ImportCities',
-        '\App\Console\Commands\ImportPoints',
+        '\App\Console\Commands\ImportDestinationPoints',
         '\App\Console\Commands\ImportAgentPoints',
         '\App\Console\Commands\GeocodePoints',
     ];
