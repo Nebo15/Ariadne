@@ -27,9 +27,11 @@ class ImportCountries extends ImportBestDataCommand {
 	public function fire()
 	{
 		$path = $this->best->downloadDictionaryToFile('Countries');
-		$count = (new Importer())
+		$importer = new Importer();
+		$count = $importer
 			->truncate()
 			->importFile($path);
+		$importer->swapTempAndMainTables();
 		$this->info('Imported '.$count.' countries');
 	}
 }

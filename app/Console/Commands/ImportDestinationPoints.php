@@ -27,9 +27,11 @@ class ImportDestinationPoints extends ImportBestDataCommand {
 	public function fire()
 	{
 		$path = $this->best->downloadDictionaryToFile('DestinationPlace');
-		$count = (new DestinationPoints($path))
+		$importer = new DestinationPoints();
+		$count = $importer
 			->truncate()
 			->importFile($path);
+		$importer->swapTempAndMainTables();
 		$this->info('Imported '.$count.' destination points');
 
 		DB::table('destination_points')

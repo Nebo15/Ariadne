@@ -27,9 +27,11 @@ class ImportCities extends ImportBestDataCommand {
 	public function fire()
 	{
 		$path = $this->best->downloadDictionaryToFile('Places');
-		$count = (new Cities())
+		$importer = new Cities();
+		$count = $importer
 			->truncate()
 			->importFile($path);
+		$importer->swapTempAndMainTables();
 		$this->info('Imported '.$count.' places');
 	}
 }
