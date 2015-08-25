@@ -16,7 +16,8 @@
         "vlucas/phpdotenv": "~1.0",
         "willdurand/geocoder": "dev-master",
         "egeloen/http-adapter": "dev-master as 0.7",
-        "nebo15/topor": "dev-master"
+        "nebo15/topor": "dev-master",
+        "soapbox/laravel-formatter": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.0",
