@@ -52,6 +52,8 @@ class ImportAgentPoints extends ImportBestDataCommand
 			$this->info('Imported chunk #'.$current_chunk.' with '.$tmp_count.' points [cycles: '.$collected_cycles_count.']');
 		}
 
+		$importer->swapTempAndMainTables();
+
 		$this->info('Imported '.$count.' points');
 	}
 

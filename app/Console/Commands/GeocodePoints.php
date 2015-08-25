@@ -1,6 +1,6 @@
 <?php namespace App\Console\Commands;
 
-use App\Models\Best\AgentPoint;
+use App\Models\Best\DestinationPoint;
 use Geocoder\Exception\ChainNoResultException;
 use Geocoder\Geocoder;
 use Illuminate\Support\Facades\DB;
@@ -39,8 +39,8 @@ class GeocodePoints extends LoggableCommand {
 	 */
 	public function fire()
 	{
-		$points = AgentPoint::with(['city', 'country'])
-			->whereNull('agent_points.latitude')
+		$points = DestinationPoint::with(['city', 'country'])
+			->whereNull('destination_points.latitude')
 			->orderBy('id')
 			->get();
 
@@ -51,12 +51,12 @@ class GeocodePoints extends LoggableCommand {
 			$count++;
 			if(0 == $count % 1000)
 			{
-				$unprocessed_points = AgentPoint::with(['city', 'country'])
-						->whereNull('agent_points.latitude')
+				$unprocessed_points = DestinationPoint::with(['city', 'country'])
+						->whereNull('destination_points.latitude')
 						->count();
 
 				$collected_cycles_count = gc_collect_cycles();
-				$this->comment($unprocessed_points.' unprocessed agent points ('.$this->getMemoryUsage().' / '.$collected_cycles_count.' cycles)');
+				$this->comment($unprocessed_points.' unprocessed destination points ('.$this->getMemoryUsage().' / '.$collected_cycles_count.' cycles)');
 			}
 
 			if(!$country = $point->country()->first())

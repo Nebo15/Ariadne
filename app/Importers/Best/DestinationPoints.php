@@ -1,13 +1,11 @@
 <?php  namespace App\Importers\Best;
 
-use Topor\Best\LaravelDataImporter;
+use App\Importers\Best\LaravelTemporaryTableDataImporter;
 
-class DestinationPoints extends LaravelDataImporter
+class DestinationPoints extends LaravelTemporaryTableDataImporter
 {
-	function getTableName()
-	{
-		return 'destination_points';
-	}
+	protected $table = 'destination_points';
+	protected $temp_table = 'destination_points_temp';
 
 	function convertRow($row)
 	{
